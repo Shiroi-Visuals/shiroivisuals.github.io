@@ -2,6 +2,8 @@
 
 Site do **Shiroi Visuals**, shaderpack para o Minecraft Java (Iris) inspirado no Vibrant Visuals.
 
+Shaders for Minecraft Java (Iris) inspired by Minecraft Bedrock's Vibrant Visuals.
+
 - Página: `index.html` (publicada pelo GitHub Pages)
 - Download do pack: [`downloads/shiroi-visuals-10.3.zip`](downloads/shiroi-visuals-10.3.zip)
 - Requisitos: Minecraft Java 26.3 com Iris 1.11 ou mais novo
