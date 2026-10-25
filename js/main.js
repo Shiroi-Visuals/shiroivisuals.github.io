@@ -9,8 +9,8 @@
       shots: [
         capture("ultra-low", 1, "Selva"),
         capture("ultra-low", 2, "Noite de lua"),
-        capture("ultra-low", 3, "Pôr do sol na savana"),
-        capture("ultra-low", 4, "Vila à beira do lago"),
+        capture("ultra-low", 3, "Por do sol na savana"),
+        capture("ultra-low", 4, "Vila a beira do lago"),
         capture("ultra-low", 5, "Lago na selva"),
         capture("ultra-low", 6, "Caverna com lava")
       ]
@@ -23,15 +23,15 @@
         capture("low", 3, "Floresta nevada"),
         capture("low", 4, "Selva de bambu"),
         capture("low", 5, "Rio entre montanhas"),
-        capture("low", 6, "Floresta de bétulas")
+        capture("low", 6, "Floresta de betulas")
       ]
     },
     medium: {
-      name: "Médio",
+      name: "Medio",
       shots: [
-        capture("medium", 1, "Savana"),
+        capture("medium", 1, "Deserto"),
         capture("medium", 2, "Badlands"),
-        capture("medium", 3, "Jardim pálido"),
+        capture("medium", 3, "Jardim palido"),
         capture("medium", 4, "Floresta outonal"),
         capture("medium", 5, "Cavernas exuberantes"),
         capture("medium", 6, "Rio nas badlands")
@@ -40,13 +40,13 @@
   };
   const DEFAULT_PRESET = "medium";
 
-  // Fundos do topo da página, trocados com a transição em dither.
+  // Fundos do topo da página, carregados sob demanda e trocados com crossfade.
   const BACKGROUNDS = [
     { src: "img/hero.jpg", name: "Floresta outonal" },
     { src: "img/presets/medium-5.jpg", name: "Cavernas exuberantes" },
     { src: "img/presets/medium-2.jpg", name: "Badlands" },
-    { src: "img/presets/medium-1.jpg", name: "Savana" },
-    { src: "img/presets/medium-3.jpg", name: "Jardim pálido" },
+    { src: "img/presets/medium-1.jpg", name: "Deserto" },
+    { src: "img/presets/medium-3.jpg", name: "Jardim palido" },
     { src: "img/presets/medium-6.jpg", name: "Rio nas badlands" }
   ];
   const BG_INTERVAL = 7000;
@@ -186,14 +186,20 @@
   window.addEventListener("scroll", updateHeader, { passive: true });
   updateHeader();
 
-  /* ---------- hero: fundos em carrossel ---------- */
+  /* ---------- hero: fundos sob demanda com crossfade de 600 ms ---------- */
   function setupHero() {
     const host = $(".hero__bg");
     const heroImg = $(".hero__img", host);
     const nameEl = $(".bg-picker__name");
     const dotsEl = $(".bg-picker__dots");
     const toggle = $(".pixel-toggle");
-    const swap = animate ? new DitherSwap(host, { fill: "#1b1c1f", maxBlock: 16, cell: 6 }) : null;
+    const transitionImg = document.createElement("img");
+    transitionImg.className = "hero__img hero__img--transition";
+    transitionImg.alt = "";
+    transitionImg.setAttribute("aria-hidden", "true");
+    transitionImg.loading = "lazy";
+    transitionImg.decoding = "async";
+    host.appendChild(transitionImg);
     const st = { index: 0, paused: !animate, timer: 0, busy: false, visible: true };
 
     BACKGROUNDS.forEach((bg, i) => {
@@ -201,6 +207,7 @@
       b.type = "button";
       b.className = "bg-dot";
       b.setAttribute("aria-label", `Fundo: ${bg.name}`);
+      b.title = bg.name;
       b.setAttribute("aria-current", i === 0 ? "true" : "false");
       b.addEventListener("click", () => { show(i); restart(); });
       dotsEl.appendChild(b);
@@ -218,13 +225,29 @@
       const next = BACKGROUNDS[i];
       st.busy = true;
       try {
-        const [fromImg, toImg] = await Promise.all([loadImage(BACKGROUNDS[st.index].src), loadImage(next.src)]);
+        const toImg = await loadImage(next.src);
+        transitionImg.style.opacity = "0";
+        transitionImg.src = toImg.src;
+        if (transitionImg.decode) await transitionImg.decode();
+        transitionImg.getBoundingClientRect();
+        await new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            transitionImg.style.opacity = "1";
+            setTimeout(resolve, reduceMotion ? 0 : 600);
+          });
+        });
+        heroImg.src = next.src;
+        transitionImg.style.transition = "none";
+        transitionImg.style.opacity = "0";
+        transitionImg.getBoundingClientRect();
+        transitionImg.style.removeProperty("transition");
         st.index = i;
         label();
-        if (swap) await swap.run(fromImg, toImg, 1.4, () => { heroImg.src = next.src; });
-        else heroImg.src = next.src;
-      } catch (e) { /* imagem indisponível: mantém o fundo atual */ }
-      st.busy = false;
+      } catch (error) {
+        console.error(`Nao foi possivel carregar o fundo "${next.name}".`, error);
+      } finally {
+        st.busy = false;
+      }
     }
     function tick() { if (!st.paused && st.visible && !document.hidden) show((st.index + 1) % BACKGROUNDS.length); }
     function restart() { clearInterval(st.timer); st.timer = setInterval(tick, BG_INTERVAL); }
@@ -239,13 +262,11 @@
       new IntersectionObserver((entries) => { st.visible = entries[0].isIntersecting; }, { threshold: 0.2 }).observe(hero);
     }
     restart();
-    BACKGROUNDS.slice(1).forEach((bg, k) => setTimeout(() => loadImage(bg.src).catch(() => {}), 1200 + k * 400));
 
     if (!animate || hero.offsetWidth < 50) return;
     const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-    loadImage(BACKGROUNDS[0].src).then((img) => swap.run(null, img, 1.3)).catch(() => {});
     tl.fromTo(".hero__logo", { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "steps(8)" }, 0.5)
-      .from([".hero__lead", ".hero__actions", ".hero__bar"], { y: 24, opacity: 0, duration: 0.6, stagger: 0.12 }, 0.95);
+      .from([".hero__lead", ".hero__actions", ".hero__chips", ".hero__bar"], { y: 24, opacity: 0, duration: 0.6, stagger: 0.12 }, 0.95);
 
     if (hasScrollTrigger) {
       gsap.to(".hero__content", {
@@ -294,6 +315,88 @@
       // Apenas garante que :focus-visible não fique sem feedback
       el.addEventListener("focus", () => el.classList.add("is-focus"));
       el.addEventListener("blur", () => el.classList.remove("is-focus"));
+    });
+  }
+
+  /* ---------- menu de downloads ---------- */
+  function setupDownloadMenus() {
+    const options = [
+      {
+        name: "Iris",
+        href: "downloads/Shiroi%20Visuals%20Snapshot%2026.3.7%20-%20Iris%20Release.zip",
+        filename: "Shiroi Visuals Snapshot 26.3.7 - Iris Release.zip",
+        logo: "img/icons/iris-svg-logo.svg"
+      },
+      {
+        name: "Vitrail",
+        href: "downloads/Shiroi%20Visuals%20Snapshot%2026.3.7%20-%20Vitrail%20Compatibility%20Release.zip",
+        filename: "Shiroi Visuals Snapshot 26.3.7 - Vitrail Compatibility Release.zip"
+      }
+    ];
+    const menus = $$("[data-download-menu]");
+
+    menus.forEach((menu) => {
+      const trigger = $("[data-download-trigger]", menu);
+      const panel = $("[data-download-options]", menu);
+      options.forEach((option) => {
+        const link = document.createElement("a");
+        link.className = "mcb mcb--stone download-menu__option";
+        link.href = option.href;
+        link.download = option.filename;
+        link.setAttribute("role", "menuitem");
+        link.innerHTML = `<span class="mcb__face">${option.logo ? `<img class="download-menu__logo" src="${option.logo}" alt="">` : ""}<span class="mcb__label">${option.name}</span></span>`;
+        link.addEventListener("click", () => close(menu));
+        panel.appendChild(link);
+      });
+
+      trigger.setAttribute("aria-controls", `download-options-${menus.indexOf(menu) + 1}`);
+      panel.id = trigger.getAttribute("aria-controls");
+      panel.setAttribute("role", "menu");
+      trigger.addEventListener("click", () => {
+        const opening = panel.hidden;
+        menus.forEach(close);
+        if (opening) {
+          panel.hidden = false;
+          trigger.setAttribute("aria-expanded", "true");
+        }
+      });
+      trigger.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown" && panel.hidden) {
+          event.preventDefault();
+          panel.hidden = false;
+          trigger.setAttribute("aria-expanded", "true");
+          $("[role='menuitem']", panel).focus();
+        }
+      });
+      menu.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          close(menu);
+          trigger.focus();
+        } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          if (event.target === trigger) return;
+          const items = $$("[role='menuitem']", panel);
+          const current = items.indexOf(document.activeElement);
+          if (current === -1) return;
+          event.preventDefault();
+          const next = event.key === "ArrowDown"
+            ? (current + 1) % items.length
+            : (current - 1 + items.length) % items.length;
+          items[next].focus();
+        }
+      });
+    });
+
+    function close(menu) {
+      const panel = $("[data-download-options]", menu);
+      const trigger = $("[data-download-trigger]", menu);
+      panel.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+    }
+
+    document.addEventListener("click", (event) => {
+      menus.forEach((menu) => {
+        if (!menu.contains(event.target)) close(menu);
+      });
     });
   }
 
@@ -496,7 +599,6 @@
 
     buildThumbs();
     paint();
-    shots().slice(1).forEach((s, k) => setTimeout(() => loadImage(s.src).catch(() => {}), 2500 + k * 300));
   }
 
   /* ---------- animações de scroll ---------- */
@@ -508,7 +610,7 @@
       scrollTrigger: { trigger: ".presets", start: "top 70%", once: true }
     });
     gsap.from(".preset-tab", {
-      y: 20, opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.08,
+      opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.08,
       scrollTrigger: { trigger: ".preset-switch", start: "top 85%", once: true }
     });
     gsap.from(".step", {
@@ -615,7 +717,6 @@
     // pre-carrega hero para não dar flash
     const heroPre = document.querySelector(".hero__img");
     if (heroPre) loadImage(heroPre.currentSrc || heroPre.src).catch(() => {});
-    BACKGROUNDS.slice(0, 2).forEach((b) => loadImage(b.src).catch(() => {}));
 
     await new Promise((resolve) => {
       let rafId = 0;
@@ -708,6 +809,7 @@
 
   async function init() {
     await runPreloader();
+    setupDownloadMenus();
     setupButtons();
     setupMagnetic();
     setupPresets();

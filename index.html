@@ -4,29 +4,31 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shiroi Visuals | Shader para Minecraft Java</title>
-  <meta name="description" content="Shiroi Visuals é um shader para o Minecraft Java inspirado no Vibrant Visuals: luz que muda com a hora, água com ondas em pixel, noites lavanda e cavernas escuras de verdade.">
+  <meta name="description" content="Shiroi Visuals e um shader para o Minecraft Java inspirado no Vibrant Visuals: luz que muda com a hora, agua com ondas em pixel, noites lavanda e cavernas escuras de verdade.">
   <meta name="theme-color" content="#1b1c1f">
   <link rel="icon" type="image/svg+xml" href="img/icons/shiroi-visuals-logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="img/hero.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="img/presets/medium-1.jpg" fetchpriority="high">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <a class="skip-link" href="#conteudo">Pular para o conteudo</a>
 
   <header class="site-header">
     <div class="site-header__inner">
-      <a class="site-header__brand" href="#topo" aria-label="Shiroi Visuals, início">
+      <a class="site-header__brand" href="#topo" aria-label="Shiroi Visuals, inicio">
         <img src="img/icons/shiroi-visuals-logo.svg" width="128" height="128" alt="">
       </a>
-      <nav class="site-nav" aria-label="Seções">
+      <nav class="site-nav" aria-label="Secoes">
         <a href="#presets">Presets</a>
         <a href="#instalar">Instalar</a>
       </nav>
-      <a class="mcb mcb--green mcb--small" href="downloads/shiroi-visuals-10.3.zip" download="Shiroi Visuals V10.3.zip">
-        <span class="mcb__face"><span class="mcb__label">Baixar</span></span>
-      </a>
+      <div class="download-menu download-menu--below" data-download-menu>
+        <button class="mcb mcb--green mcb--small" type="button" data-download-trigger aria-expanded="false" aria-haspopup="true">
+          <span class="mcb__face"><span class="mcb__label">Baixar</span></span>
+        </button>
+        <div class="download-menu__options" data-download-options hidden></div>
+      </div>
     </div>
   </header>
 
@@ -40,18 +42,20 @@
         <h1 class="hero__title" id="hero-title">
           <img class="hero__logo" src="img/logo.png" width="1116" height="408" alt="Shiroi Visuals">
         </h1>
-        <p class="hero__lead">Shader para Minecraft Java inspirado no Vibrant Visuals: luz que muda com a hora, água com ondas em pixel, noites lavanda e cavernas escuras de verdade.</p>
+        <p class="hero__lead">Shader para Minecraft Java inspirado no Vibrant Visuals: luz que muda com a hora, agua com ondas em pixel, noites lavanda e cavernas escuras de verdade.</p>
         <div class="hero__actions">
           <div class="magnetic">
-            <a class="mcb mcb--green mcb--xl" href="downloads/shiroi-visuals-10.3.zip" download="Shiroi Visuals V10.3.zip">
+            <div class="download-menu" data-download-menu>
+              <button class="mcb mcb--green mcb--xl" type="button" data-download-trigger aria-expanded="false" aria-haspopup="true">
               <span class="mcb__face">
                 <svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M54.857 73.143 L54.857 0 L73.143 0 L73.143 73.143 L91.429 73.143 L91.429 54.857 L109.714 54.857 L109.714 73.143 L99.033 73.143 L99.033 80.747 L91.429 80.747 L91.429 91.429 L80.747 91.429 L80.747 99.033 L73.143 99.033 L73.143 109.714 L118.857 109.714 L118.857 128 L9.143 128 L9.143 109.714 L54.857 109.714 L54.857 99.033 L47.253 99.033 L47.253 91.429 L36.571 91.429 L36.571 80.747 L28.967 80.747 L28.967 73.143 L18.286 73.143 L18.286 54.857 L36.571 54.857 L36.571 73.143 Z"/></svg>
                 <span class="mcb__text">
                   <span class="mcb__label">Baixar</span>
-                  <span class="mcb__meta">Versão 10.3, arquivo .zip de 332 KB</span>
                 </span>
               </span>
-            </a>
+              </button>
+              <div class="download-menu__options" data-download-options hidden></div>
+            </div>
           </div>
           <a class="mcb mcb--stone" href="#presets">
             <span class="mcb__face"><span class="mcb__label">Ver presets</span></span>
@@ -60,9 +64,8 @@
       </div>
       <div class="hero__bar">
         <ul class="hero__facts">
-          <li>Inspirado no Vibrant Visuals, para o Java</li>
         </ul>
-        <div class="bg-picker" role="group" aria-label="Fundo da página">
+        <div class="bg-picker" role="group" aria-label="Fundo da pagina">
           <p class="bg-picker__name"></p>
           <div class="bg-picker__dots"></div>
           <button class="pixel-toggle" type="button" aria-pressed="false" aria-label="Pausar a troca de fundo">
@@ -71,24 +74,28 @@
           </button>
         </div>
       </div>
+      <!-- Atalho visual para os presets. -->
+      <a class="hero__scroll" href="#presets" aria-label="Rolar para os presets">
+<svg viewBox="0 0 160 128" aria-hidden="true"><path transform="rotate(90 64 64)" d="M25.6 25.6 L25.6 0 L51.2 0 L51.2 25.6 Z M51.2 51.2 L51.2 25.6 L76.8 25.6 L76.8 51.2 Z M76.8 76.8 L76.8 51.2 L102.4 51.2 L102.4 76.8 Z M51.2 102.4 L51.2 76.8 L76.8 76.8 L76.8 102.4 Z M25.6 128 L25.6 102.4 L51.2 102.4 L51.2 128 Z"></path></svg>
+      </a>
     </section>
 
     <section class="presets" id="presets" aria-labelledby="presets-title">
       <div class="container">
         <div class="presets__head">
           <h2 class="section-title" id="presets-title">Escolha o preset e veja no jogo</h2>
-          <p class="presets__intro">Do Ultra Baixo, para gráficos integrados, até o Médio, o padrão do pack.</p>
+          <p class="presets__intro">Do Ultra Baixo, para graficos integrados, ate o Medio, o padrao do pack.</p>
         </div>
 
         <div class="preset-switch" role="tablist" aria-label="Preset">
           <button class="mcb mcb--stone preset-tab" role="tab" id="tab-ultra-low" data-preset="ultra-low" aria-selected="false" aria-controls="carousel" tabindex="-1">
-            <span class="mcb__face"><span class="mcb__text"><span class="mcb__label">Ultra Baixo</span><span class="mcb__meta">Gráficos integrados</span></span></span>
+            <span class="mcb__face"><span class="mcb__label">Ultra Baixo</span></span>
           </button>
           <button class="mcb mcb--stone preset-tab" role="tab" id="tab-low" data-preset="low" aria-selected="false" aria-controls="carousel" tabindex="-1">
-            <span class="mcb__face"><span class="mcb__text"><span class="mcb__label">Baixo</span><span class="mcb__meta">Placas de entrada</span></span></span>
+            <span class="mcb__face"><span class="mcb__label">Baixo</span></span>
           </button>
           <button class="mcb mcb--stone preset-tab" role="tab" id="tab-medium" data-preset="medium" aria-selected="true" aria-controls="carousel">
-            <span class="mcb__face"><span class="mcb__text"><span class="mcb__label">Médio</span><span class="mcb__meta">Equilíbrio padrão</span></span></span>
+            <span class="mcb__face"><span class="mcb__label">Medio</span></span>
           </button>
         </div>
 
@@ -104,7 +111,7 @@
               <button class="mcb mcb--stone mcb--icon" type="button" data-dir="-1" aria-label="Captura anterior">
                 <span class="mcb__face"><svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M102.4 25.6 L102.4 0 L76.8 0 L76.8 25.6 Z M76.8 51.2 L76.8 25.6 L51.2 25.6 L51.2 51.2 Z M51.2 76.8 L51.2 51.2 L25.6 51.2 L25.6 76.8 Z M76.8 102.4 L76.8 76.8 L51.2 76.8 L51.2 102.4 Z M102.4 128 L102.4 102.4 L76.8 102.4 L76.8 128 Z"/></svg></span>
               </button>
-              <button class="mcb mcb--stone mcb--icon" type="button" data-dir="1" aria-label="Próxima captura">
+              <button class="mcb mcb--stone mcb--icon" type="button" data-dir="1" aria-label="Proxima captura">
                 <span class="mcb__face"><svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M25.6 25.6 L25.6 0 L51.2 0 L51.2 25.6 Z M51.2 51.2 L51.2 25.6 L76.8 25.6 L76.8 51.2 Z M76.8 76.8 L76.8 51.2 L102.4 51.2 L102.4 76.8 Z M51.2 102.4 L51.2 76.8 L76.8 76.8 L76.8 102.4 Z M25.6 128 L25.6 102.4 L51.2 102.4 L51.2 128 Z"/></svg></span>
               </button>
             </div>
@@ -120,20 +127,22 @@
         <ol class="steps">
           <li class="step"><span class="step__slot" aria-hidden="true">1</span><p>Instale o <span class="iris"><img class="iris__mark" src="img/icons/iris-svg-logo.svg" width="128" height="128" alt="">Iris</span> para o Minecraft Java 26.3.</p></li>
           <li class="step"><span class="step__slot" aria-hidden="true">2</span><p>Coloque o arquivo .zip na pasta <code>shaderpacks</code>, sem extrair.</p></li>
-          <li class="step"><span class="step__slot" aria-hidden="true">3</span><p>No jogo, abra Opções, Vídeo, Shader Packs e escolha Shiroi Visuals V10.3.</p></li>
-          <li class="step"><span class="step__slot" aria-hidden="true">4</span><p>Escolha o preset no menu do shader. O padrão é o Médio.</p></li>
+          <li class="step"><span class="step__slot" aria-hidden="true">3</span><p>No jogo, abra Opcoes, Video, Shader Packs e escolha Shiroi Visuals V10.3.</p></li>
+          <li class="step"><span class="step__slot" aria-hidden="true">4</span><p>Escolha o preset no menu do shader. O padrao e o Medio.</p></li>
         </ol>
         <div class="install__cta">
           <div class="magnetic">
-            <a class="mcb mcb--green mcb--xl" href="downloads/shiroi-visuals-10.3.zip" download="Shiroi Visuals V10.3.zip">
+            <div class="download-menu" data-download-menu>
+              <button class="mcb mcb--green mcb--xl" type="button" data-download-trigger aria-expanded="false" aria-haspopup="true">
               <span class="mcb__face">
                 <svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M54.857 73.143 L54.857 0 L73.143 0 L73.143 73.143 L91.429 73.143 L91.429 54.857 L109.714 54.857 L109.714 73.143 L99.033 73.143 L99.033 80.747 L91.429 80.747 L91.429 91.429 L80.747 91.429 L80.747 99.033 L73.143 99.033 L73.143 109.714 L118.857 109.714 L118.857 128 L9.143 128 L9.143 109.714 L54.857 109.714 L54.857 99.033 L47.253 99.033 L47.253 91.429 L36.571 91.429 L36.571 80.747 L28.967 80.747 L28.967 73.143 L18.286 73.143 L18.286 54.857 L36.571 54.857 L36.571 73.143 Z"/></svg>
                 <span class="mcb__text">
                   <span class="mcb__label">Baixar Shiroi Visuals</span>
-                  <span class="mcb__meta">Versão 10.3, arquivo .zip de 332 KB</span>
                 </span>
               </span>
-            </a>
+              </button>
+              <div class="download-menu__options" data-download-options hidden></div>
+            </div>
           </div>
         </div>
       </div>
@@ -144,7 +153,7 @@
     <div class="container footer__grid">
       <div class="footer__brand">
         <img src="img/logo.png" width="1116" height="408" alt="Shiroi Visuals">
-        <p>Shader para Minecraft Java inspirado no Vibrant Visuals, do Ultra Baixo ao Médio.</p>
+        <p>Shader para Minecraft Java inspirado no Vibrant Visuals, do Ultra Baixo ao Medio.</p>
       </div>
       <nav class="footer__col" aria-labelledby="ft-nav">
         <h2 id="ft-nav">Navegar</h2>
@@ -158,23 +167,25 @@
         <ul>
           <li>Minecraft Java 26.3</li>
           <li><span class="iris"><img class="iris__mark" src="img/icons/iris-svg-logo.svg" width="128" height="128" alt="">Iris</span></li>
-          <li>Do gráfico integrado à placa forte</li>
+          <li>Do grafico integrado a placa forte</li>
         </ul>
       </div>
       <div class="footer__col footer__download">
-        <h2>Versão 10.3</h2>
         <p class="footer__version"><time datetime="2026-10-23">23 de outubro de 2026</time></p>
-        <a class="mcb mcb--green" href="downloads/shiroi-visuals-10.3.zip" download="Shiroi Visuals V10.3.zip">
-          <span class="mcb__face">
-            <svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M54.857 73.143 L54.857 0 L73.143 0 L73.143 73.143 L91.429 73.143 L91.429 54.857 L109.714 54.857 L109.714 73.143 L99.033 73.143 L99.033 80.747 L91.429 80.747 L91.429 91.429 L80.747 91.429 L80.747 99.033 L73.143 99.033 L73.143 109.714 L118.857 109.714 L118.857 128 L9.143 128 L9.143 109.714 L54.857 109.714 L54.857 99.033 L47.253 99.033 L47.253 91.429 L36.571 91.429 L36.571 80.747 L28.967 80.747 L28.967 73.143 L18.286 73.143 L18.286 54.857 L36.571 54.857 L36.571 73.143 Z"/></svg>
-            <span class="mcb__label">Baixar</span>
-          </span>
-        </a>
+        <div class="download-menu" data-download-menu>
+          <button class="mcb mcb--green" type="button" data-download-trigger aria-expanded="false" aria-haspopup="true">
+            <span class="mcb__face">
+              <svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M54.857 73.143 L54.857 0 L73.143 0 L73.143 73.143 L91.429 73.143 L91.429 54.857 L109.714 54.857 L109.714 73.143 L99.033 73.143 L99.033 80.747 L91.429 80.747 L91.429 91.429 L80.747 91.429 L80.747 99.033 L73.143 99.033 L73.143 109.714 L118.857 109.714 L118.857 128 L9.143 128 L9.143 109.714 L54.857 109.714 L54.857 99.033 L47.253 99.033 L47.253 91.429 L36.571 91.429 L36.571 80.747 L28.967 80.747 L28.967 73.143 L18.286 73.143 L18.286 54.857 L36.571 54.857 L36.571 73.143 Z"/></svg>
+              <span class="mcb__label">Baixar</span>
+            </span>
+          </button>
+          <div class="download-menu__options" data-download-options hidden></div>
+        </div>
       </div>
     </div>
     <div class="footer__bottom">
       <div class="container footer__bottom-inner">
-        <p>Shiroi Visuals é um projeto independente, não afiliado à Mojang nem à Microsoft. Minecraft e Vibrant Visuals são marcas da Mojang Studios.</p>
+        <p>Shiroi Visuals e um projeto independente, nao afiliado a Mojang nem a Microsoft. Minecraft e Vibrant Visuals sao marcas da Mojang Studios.</p>
         <a class="mcb mcb--stone mcb--small" href="#topo">
           <span class="mcb__face">
             <svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path transform="rotate(-90 64 64)" d="M25.6 25.6 L25.6 0 L51.2 0 L51.2 25.6 Z M51.2 51.2 L51.2 25.6 L76.8 25.6 L76.8 51.2 Z M76.8 76.8 L76.8 51.2 L102.4 51.2 L102.4 76.8 Z M51.2 102.4 L51.2 76.8 L76.8 76.8 L76.8 102.4 Z M25.6 128 L25.6 102.4 L51.2 102.4 L51.2 128 Z"/></svg>
