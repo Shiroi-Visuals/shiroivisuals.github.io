@@ -301,8 +301,22 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   backdrop-filter: blur(8px);
 }
 .download-menu--below .download-menu__options { top: calc(100% + 8px); bottom: auto; }
+@media (min-width: 769px) {
+  .download-menu__options { top: calc(100% + 8px); bottom: auto; }
+}
 .download-menu__options[hidden] { display: none; }
-.download-menu__option { display: flex; width: 100%; min-width: 0; }
+.download-menu__option {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  animation: download-option-enter 220ms ease-out both;
+}
+.download-menu__option:nth-child(2) { animation-delay: 200ms; }
+.download-menu__option:nth-child(3) { animation-delay: 400ms; }
+@keyframes download-option-enter {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .download-menu__option .mcb__face {
   justify-content: flex-start;
   gap: 12px;
@@ -963,4 +977,5 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   .footer__col a,
   .hero__img--transition { transition: none; }
   .hero__scroll svg { animation: none; }
+  .download-menu__option { animation: none; }
 }

@@ -322,6 +322,12 @@
   function setupDownloadMenus() {
     const options = [
       {
+        name: "Modrinth",
+        href: "https://modrinth.com/shader/shiroi-visuals",
+        logo: "img/icons/modrinth-logo.svg",
+        external: true
+      },
+      {
         name: "Iris",
         href: "downloads/Shiroi%20Visuals%20Snapshot%2026.3.7%20-%20Iris%20Release.zip",
         filename: "Shiroi Visuals Snapshot 26.3.7 - Iris Release.zip",
@@ -342,7 +348,11 @@
         const link = document.createElement("a");
         link.className = "mcb mcb--stone download-menu__option";
         link.href = option.href;
-        link.download = option.filename;
+        if (option.filename) link.download = option.filename;
+        if (option.external) {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
         link.setAttribute("role", "menuitem");
         link.innerHTML = `<span class="mcb__face">${option.logo ? `<img class="download-menu__logo" src="${option.logo}" alt="">` : ""}<span class="mcb__label">${option.name}</span></span>`;
         link.addEventListener("click", () => close(menu));
