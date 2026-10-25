@@ -435,7 +435,7 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
 .hero__actions,
 .hero__chips { max-width: 48%; }
 .hero__logo {
-  width: clamp(300px, 42vw, 620px);
+  width: clamp(144px, 18vw, 216px);
   max-width: 100%;
   image-rendering: pixelated;
   clip-path: inset(0% 0% 0% 0%);
@@ -813,7 +813,7 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   gap: 2.5rem 2rem;
   padding-block: clamp(3rem, 7vw, 4.5rem) 2.5rem;
 }
-.footer__brand img { width: 220px; image-rendering: pixelated; margin-bottom: 1rem; }
+.footer__brand img { width: 88px; image-rendering: pixelated; margin-bottom: 1rem; }
 .footer__brand p { margin: 0; max-width: 34ch; }
 .footer__col h2 {
   margin: 0 0 0.9rem;
@@ -849,7 +849,7 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   .hero__lead,
   .hero__chips { max-width: 60%; }
   .hero__lead { width: 60%; }
-  .hero__logo { width: 50vw; }
+  .hero__logo { width: clamp(144px, 18vw, 216px); }
   .presets__head { grid-template-columns: 1fr; }
   .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -866,7 +866,7 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   .hero__lead,
   .hero__chips { max-width: 100%; }
   .hero__lead { width: 100%; }
-  .hero__logo { width: clamp(300px, 42vw, 620px); }
+  .hero__logo { width: clamp(144px, 36vw, 180px); }
   .hero__lead { font-size: clamp(20px, 1.8vw, 26px); }
   .hero__actions {
     flex-direction: row;
