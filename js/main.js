@@ -269,7 +269,7 @@
       .from([".hero__lead", ".hero__actions", ".hero__chips", ".hero__bar"], { y: 24, opacity: 0, duration: 0.6, stagger: 0.12 }, 0.95);
 
     if (hasScrollTrigger) {
-      gsap.to(".hero__content", {
+      gsap.to([".hero__title", ".hero__lead", ".hero__chips"], {
         yPercent: -14, opacity: 0.15, ease: "none",
         scrollTrigger: { trigger: hero, start: "35% top", end: "bottom top", scrub: true }
       });
