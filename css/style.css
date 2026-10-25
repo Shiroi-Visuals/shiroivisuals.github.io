@@ -630,6 +630,7 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   place-items: center;
   width: 40px;
   height: 32px;
+  background: transparent;
   transform: translateX(-50%);
 }
 .hero__scroll svg {
