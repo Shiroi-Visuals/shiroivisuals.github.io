@@ -430,7 +430,6 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   transform: translateY(-3vh);
 }
 .hero__title { max-width: 100%; margin: 0 0 var(--space-3); }
-.hero__title,
 .hero__lead,
 .hero__actions,
 .hero__chips { max-width: 48%; }
@@ -845,7 +844,6 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
 
 /* Responsive: reduz o bloco e conserva a largura segura para o personagem. */
 @media (max-width: 1024px) {
-  .hero__title,
   .hero__lead,
   .hero__chips { max-width: 60%; }
   .hero__lead { width: 60%; }
