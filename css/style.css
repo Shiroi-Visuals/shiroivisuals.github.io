@@ -434,7 +434,7 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
 .hero__actions,
 .hero__chips { max-width: 48%; }
 .hero__logo {
-  width: clamp(360px, 52vw, 760px);
+  width: 580px;
   max-width: 100%;
   image-rendering: pixelated;
   clip-path: inset(0% 0% 0% 0%);
@@ -847,7 +847,6 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   .hero__lead,
   .hero__chips { max-width: 60%; }
   .hero__lead { width: 60%; }
-  .hero__logo { width: 62vw; }
   .presets__head { grid-template-columns: 1fr; }
   .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -864,7 +863,6 @@ html:not(.js-anim) .mcb:hover .mcb__face { background: var(--face-hover); }
   .hero__lead,
   .hero__chips { max-width: 100%; }
   .hero__lead { width: 100%; }
-  .hero__logo { width: clamp(320px, 60vw, 620px); }
   .hero__lead { font-size: clamp(20px, 1.8vw, 26px); }
   .hero__actions {
     flex-direction: row;
