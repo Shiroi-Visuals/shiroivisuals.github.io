@@ -340,6 +340,7 @@
       }
     ];
     const menus = $$("[data-download-menu]");
+    const closeTimers = new WeakMap();
 
     menus.forEach((menu) => {
       const trigger = $("[data-download-trigger]", menu);
@@ -362,19 +363,24 @@
       trigger.setAttribute("aria-controls", `download-options-${menus.indexOf(menu) + 1}`);
       panel.id = trigger.getAttribute("aria-controls");
       panel.setAttribute("role", "menu");
-      trigger.addEventListener("click", () => {
-        const opening = panel.hidden;
-        menus.forEach(close);
-        if (opening) {
-          panel.hidden = false;
-          trigger.setAttribute("aria-expanded", "true");
+      panel.addEventListener("animationend", (event) => {
+        if (
+          panel.classList.contains("is-closing")
+          && event.target === panel.firstElementChild
+          && event.animationName === "download-option-exit"
+        ) {
+          finishClose(menu);
         }
       });
+      trigger.addEventListener("click", () => {
+        const opening = panel.hidden || panel.classList.contains("is-closing");
+        menus.forEach(close);
+        if (opening) open(menu);
+      });
       trigger.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowDown" && panel.hidden) {
+        if (event.key === "ArrowDown" && (panel.hidden || panel.classList.contains("is-closing"))) {
           event.preventDefault();
-          panel.hidden = false;
-          trigger.setAttribute("aria-expanded", "true");
+          open(menu);
           $("[role='menuitem']", panel).focus();
         }
       });
@@ -399,8 +405,48 @@
     function close(menu) {
       const panel = $("[data-download-options]", menu);
       const trigger = $("[data-download-trigger]", menu);
-      panel.hidden = true;
+      if (panel.hidden || panel.classList.contains("is-closing")) return;
       trigger.setAttribute("aria-expanded", "false");
+      panel.inert = true;
+      panel.setAttribute("aria-hidden", "true");
+      if (reduceMotion) {
+        finishClose(menu);
+        return;
+      }
+      panel.classList.add("is-closing");
+      const firstOptionStyle = getComputedStyle(panel.firstElementChild);
+      const animationEnd = (value) => {
+        const time = parseFloat(value) || 0;
+        return value.trim().endsWith("ms") ? time : time * 1000;
+      };
+      const fallbackDelay = animationEnd(firstOptionStyle.animationDelay)
+        + animationEnd(firstOptionStyle.animationDuration)
+        + 100;
+      closeTimers.set(menu, window.setTimeout(() => finishClose(menu), fallbackDelay));
+    }
+
+    function open(menu) {
+      const panel = $("[data-download-options]", menu);
+      const trigger = $("[data-download-trigger]", menu);
+      const timer = closeTimers.get(menu);
+      if (timer) window.clearTimeout(timer);
+      closeTimers.delete(menu);
+      panel.classList.remove("is-closing");
+      panel.inert = false;
+      panel.removeAttribute("aria-hidden");
+      panel.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+    }
+
+    function finishClose(menu) {
+      const panel = $("[data-download-options]", menu);
+      const timer = closeTimers.get(menu);
+      if (timer) window.clearTimeout(timer);
+      closeTimers.delete(menu);
+      panel.hidden = true;
+      panel.inert = false;
+      panel.classList.remove("is-closing");
+      panel.removeAttribute("aria-hidden");
     }
 
     document.addEventListener("click", (event) => {
