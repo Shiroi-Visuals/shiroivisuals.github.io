@@ -326,17 +326,6 @@
         href: "https://modrinth.com/shader/shiroi-visuals",
         logo: "img/icons/modrinth-logo.svg",
         external: true
-      },
-      {
-        name: "Iris",
-        href: "downloads/Shiroi%20Visuals%20Snapshot%2026.3.7%20-%20Iris%20Release.zip",
-        filename: "Shiroi Visuals Snapshot 26.3.7 - Iris Release.zip",
-        logo: "img/icons/iris-svg-logo.svg"
-      },
-      {
-        name: "Vitrail",
-        href: "downloads/Shiroi%20Visuals%20Snapshot%2026.3.7%20-%20Vitrail%20Compatibility%20Release.zip",
-        filename: "Shiroi Visuals Snapshot 26.3.7 - Vitrail Compatibility Release.zip"
       }
     ];
     const menus = $$("[data-download-menu]");
