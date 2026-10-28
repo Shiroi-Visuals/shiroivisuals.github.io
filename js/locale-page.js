@@ -186,29 +186,40 @@
     return `${text.slice(0, start)}${translated}${text.slice(start + trimmed.length)}`;
   }
 
+  function translateAttribute(element, attribute) {
+    const value = element.getAttribute(attribute);
+    if (!value) return;
+
+    let translatedValue = value;
+    if (attribute === "alt" && element.matches(".carousel__img")) {
+      translatedValue = translatedValue.replace(" no preset ", locale === "en" ? " - " : " en el preset ");
+    }
+    if (attribute === "aria-label" && element.matches(".thumb")) {
+      translatedValue = translatedValue.replace(/^Ver /, locale === "en" ? "View " : "Ver ");
+    }
+    translatedValue = translateText(translatedValue);
+    if (translatedValue !== value) element.setAttribute(attribute, translatedValue);
+  }
+
   function translateNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
-      node.textContent = translateText(node.textContent || "");
+      const currentText = node.textContent || "";
+      const translatedText = translateText(currentText);
+      if (translatedText !== currentText) node.textContent = translatedText;
       return;
     }
     if (node.nodeType !== Node.ELEMENT_NODE) return;
 
     const element = node;
     for (const attribute of ["aria-label", "aria-roledescription", "title"]) {
-      const value = element.getAttribute(attribute);
-      if (value) element.setAttribute(attribute, translateText(value));
+      translateAttribute(element, attribute);
     }
     if (element.matches(".carousel__count")) {
-      element.textContent = element.textContent.replace(/\bde\b/, locale === "en" ? "of" : "de");
+      const currentText = element.textContent;
+      const translatedText = currentText.replace(/\bde\b/, locale === "en" ? "of" : "de");
+      if (translatedText !== currentText) element.textContent = translatedText;
     }
-    if (element.matches(".carousel__img")) {
-      element.alt = element.alt.replace(" no preset ", locale === "en" ? " - " : " en el preset ");
-      element.alt = translateText(element.alt);
-    }
-    if (element.matches(".thumb")) {
-      element.setAttribute("aria-label", element.getAttribute("aria-label").replace(/^Ver /, locale === "en" ? "View " : "Ver "));
-      element.setAttribute("aria-label", translateText(element.getAttribute("aria-label")));
-    }
+    if (element.hasAttribute("alt")) translateAttribute(element, "alt");
     element.childNodes.forEach(translateNode);
   }
 
@@ -265,9 +276,15 @@
   render();
   new MutationObserver((records) => {
     for (const record of records) {
-      record.addedNodes.forEach(translateNode);
-      if (record.type === "attributes") translateNode(record.target);
-      if (record.type === "characterData") translateNode(record.target);
+      if (record.type === "attributes") {
+        translateAttribute(record.target, record.attributeName);
+      } else {
+        record.addedNodes.forEach(translateNode);
+        if (record.target.nodeType === Node.ELEMENT_NODE && record.target.matches(".carousel__count")) {
+          translateNode(record.target);
+        }
+        if (record.type === "characterData") translateNode(record.target);
+      }
     }
   }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["aria-label", "alt", "title"] });
 })();
