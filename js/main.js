@@ -62,6 +62,26 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
+  /* ---------- troca de texto no lugar (150 ms, 4 px) ---------- */
+  const SWAP_MS = 150;
+  const swapTimers = new WeakMap();
+  function swapText(el, next) {
+    clearTimeout(swapTimers.get(el));
+    if (reduceMotion || !el.textContent) {
+      el.classList.remove("is-exit", "is-enter-start");
+      el.textContent = next;
+      return;
+    }
+    el.classList.add("is-exit");
+    swapTimers.set(el, setTimeout(() => {
+      el.textContent = next;
+      el.classList.remove("is-exit");
+      el.classList.add("is-enter-start");
+      el.getBoundingClientRect();
+      el.classList.remove("is-enter-start");
+    }, SWAP_MS));
+  }
+
   /* ---------- imagens ---------- */
   const imageCache = new Map();
   function loadImage(src) {
@@ -190,7 +210,7 @@
   function setupHero() {
     const host = $(".hero__bg");
     const heroImg = $(".hero__img", host);
-    const nameEl = $(".bg-picker__name");
+    const nameEl = $(".bg-picker__name .swap-text");
     const dotsEl = $(".bg-picker__dots");
     const toggle = $(".pixel-toggle");
     const transitionImg = document.createElement("img");
@@ -213,7 +233,7 @@
       dotsEl.appendChild(b);
     });
     const label = () => {
-      nameEl.textContent = BACKGROUNDS[st.index].name;
+      swapText(nameEl, BACKGROUNDS[st.index].name);
       $$(".bg-dot", dotsEl).forEach((d, i) => d.setAttribute("aria-current", i === st.index ? "true" : "false"));
     };
     label();
@@ -264,16 +284,10 @@
     restart();
 
     if (!animate || hero.offsetWidth < 50) return;
-    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-    tl.fromTo(".hero__logo", { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "steps(8)" }, 0.5)
-      .from([".hero__lead", ".hero__actions", ".hero__chips", ".hero__bar"], { y: 24, opacity: 0, duration: 0.6, stagger: 0.12 }, 0.95);
-
-    if (hasScrollTrigger) {
-      gsap.to([".hero__title", ".hero__lead", ".hero__chips"], {
-        yPercent: -14, opacity: 0.15, ease: "none",
-        scrollTrigger: { trigger: hero, start: "35% top", end: "bottom top", scrub: true }
-      });
-    }
+    // Entrada unica: o logo sobe em degraus e o resto do bloco entra em seguida.
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    tl.fromTo(".hero__logo", { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: "steps(8)" }, 0.15)
+      .from([".hero__lead", ".hero__actions", ".hero__bar"], { y: 12, opacity: 0, duration: 0.5, stagger: 0.08, clearProps: "transform,opacity" }, 0.45);
   }
 
   /* ---------- botões: estilo minecraft.com ---------- */
@@ -498,8 +512,8 @@
         targetX = 0; targetY = 0;
         if (raf) { cancelAnimationFrame(raf); raf = 0; }
         // reseta SEM conflitar com o CSS hover lift: lê o x/y atual do GSAP e anima de volta
-        gsap.to(btn, { x: 0, y: 0, duration: 0.85, ease: "elastic.out(1, 0.38)", overwrite: "auto" });
-        if (inner) gsap.to(inner, { x: 0, y: 0, duration: 0.85, ease: "elastic.out(1, 0.38)", overwrite: "auto" });
+        gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "back.out(2.2)", overwrite: "auto" });
+        if (inner) gsap.to(inner, { x: 0, y: 0, duration: 0.5, ease: "back.out(2.2)", overwrite: "auto" });
       };
 
       const onLeave = (e) => {
@@ -548,11 +562,9 @@
       const shot = list[st.index];
       stageImg.src = shot.src;
       stageImg.alt = `${shot.biome} no preset ${PRESETS[st.preset].name}`;
-      biome.textContent = shot.biome;
+      swapText(biome, shot.biome);
       count.textContent = `${st.index + 1} de ${list.length}`;
       $$(".thumb", thumbs).forEach((t, i) => t.setAttribute("aria-current", i === st.index ? "true" : "false"));
-      const active = $$(".thumb", thumbs)[st.index];
-      if (active) thumbs.scrollTo({ left: active.offsetLeft - thumbs.clientWidth / 2 + active.offsetWidth / 2, behavior: reduceMotion ? "auto" : "smooth" });
     }
 
     function buildThumbs() {
@@ -587,7 +599,7 @@
       if (!swap) { commit(); return; }
       try {
         const [fromImg, toImg] = await Promise.all([loadImage(fromSrc), loadImage(toSrc)]);
-        await swap.run(fromImg, toImg, 0.95, commit);
+        await swap.run(fromImg, toImg, 0.7, commit);
       } catch (e) { commit(); }
     }
 
@@ -651,209 +663,16 @@
     if (!hasScrollTrigger || reduceMotion) return;
 
     gsap.from(".carousel__frame", {
-      y: 40, opacity: 0, duration: 0.8, ease: "steps(6)",
+      y: 12, opacity: 0, duration: 0.5, ease: "steps(5)", clearProps: "transform,opacity",
       scrollTrigger: { trigger: ".presets", start: "top 70%", once: true }
     });
-    gsap.from(".preset-tab", {
-      opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.08,
-      scrollTrigger: { trigger: ".preset-switch", start: "top 85%", once: true }
-    });
     gsap.from(".step", {
-      y: 28, opacity: 0, duration: 0.6, ease: "steps(5)", stagger: 0.12,
-      scrollTrigger: { trigger: ".steps", start: "top 82%", once: true }
-    });
-    gsap.from(".footer__grid > *", {
-      y: 24, opacity: 0, duration: 0.5, ease: "steps(4)", stagger: 0.08,
-      scrollTrigger: { trigger: ".site-footer", start: "top 92%", once: true }
+      y: 12, opacity: 0, duration: 0.4, ease: "steps(4)", stagger: 0.08, clearProps: "transform,opacity",
+      scrollTrigger: { trigger: ".steps", start: "top 85%", once: true }
     });
   }
 
-  /* ---------- preloader de pixeis grandes + wipe ---------- */
-  async function runPreloader() {
-    const pre = document.getElementById("preloader");
-    if (!pre) return;
-    const grid = pre.querySelector(".preloader__grid");
-    const fill = pre.querySelector(".preloader__fill");
-    const pctEl = pre.querySelector(".preloader__pct");
-    const track = pre.querySelector(".preloader__track");
-    const center = pre.querySelector(".preloader__center");
-
-    const isMobile = window.innerWidth < 700;
-    const PIXEL = isMobile ? 36 : 56;
-
-    function buildGrid(container, pixel) {
-      const cols = Math.ceil(window.innerWidth / pixel);
-      const rows = Math.ceil(window.innerHeight / pixel);
-      const cappedCols = Math.min(cols, 36);
-      const cappedRows = Math.min(rows, 20);
-      // se for muito grande (4K), aumenta o pixel para não criar 2000 divs
-      let c = cols, r = rows;
-      if (c * r > 720) {
-        const scale = Math.sqrt((c * r) / 720);
-        const bigger = Math.ceil(pixel * scale);
-        c = Math.ceil(window.innerWidth / bigger);
-        r = Math.ceil(window.innerHeight / bigger);
-      } else {
-        c = cappedCols; r = cappedRows;
-        // recalcula para cobrir tela mesmo capando, usa fr então ok — mas mantém proporção
-        c = cols; r = rows;
-        if (c * r > 720) {
-          c = Math.ceil(cols * 0.85);
-          r = Math.ceil(rows * 0.85);
-        }
-      }
-      container.style.gridTemplateColumns = `repeat(${c}, 1fr)`;
-      container.style.gridTemplateRows = `repeat(${r}, 1fr)`;
-      container.innerHTML = "";
-      const cells = [];
-      for (let i = 0; i < c * r; i++) {
-        const s = document.createElement("span");
-        const rnd = Math.random();
-        if (rnd < 0.11) s.classList.add("is-grass");
-        else if (rnd < 0.18) s.classList.add("is-stone");
-        else if (rnd < 0.22) s.classList.add("is-dirt");
-        else if (rnd < 0.25) s.classList.add("is-sky");
-        container.appendChild(s);
-        cells.push(s);
-      }
-      return { cols: c, rows: r, cells };
-    }
-
-    const { cols, rows, cells } = buildGrid(grid, PIXEL);
-
-    // Reduced motion: sai rápido sem blocos
-    if (reduceMotion || !hasGsap) {
-      if (fill) fill.style.width = "100%";
-      if (pctEl) pctEl.textContent = "100%";
-      if (track) track.setAttribute("aria-valuenow", "100");
-      await new Promise((res) => setTimeout(res, 260));
-      pre.style.transition = "opacity 0.26s ease";
-      pre.style.opacity = "0";
-      await new Promise((res) => setTimeout(res, 300));
-      pre.remove();
-      document.body.classList.remove("is-preloading");
-      return;
-    }
-
-    // entrada dos blocos grandes
-    gsap.set(cells, { scale: 0, opacity: 1, transformOrigin: "center center" });
-    gsap.to(cells, {
-      scale: 1,
-      duration: 0.46,
-      ease: "power2.out",
-      stagger: { amount: 0.34, from: "center", grid: [rows, cols] },
-      overwrite: true
-    });
-    gsap.set(center, { scale: 0.96, opacity: 0, y: 8 });
-    gsap.to(center, { scale: 1, opacity: 1, y: 0, duration: 0.48, ease: "power3.out", delay: 0.18 });
-
-    // progresso simulado + espera load real (rápido)
-    let p = 0;
-    const start = performance.now();
-    const MIN_MS = 820;
-    const MAX_MS = 1550;
-    let loadDone = document.readyState === "complete";
-    if (!loadDone) {
-      window.addEventListener("load", () => { loadDone = true; }, { once: true });
-      setTimeout(() => { loadDone = true; }, MAX_MS);
-    } else {
-      setTimeout(() => { loadDone = true; }, 120);
-    }
-    // pre-carrega hero para não dar flash
-    const heroPre = document.querySelector(".hero__img");
-    if (heroPre) loadImage(heroPre.currentSrc || heroPre.src).catch(() => {});
-
-    await new Promise((resolve) => {
-      let rafId = 0;
-      const tick = () => {
-        const elapsed = performance.now() - start;
-        const t = Math.min(1, elapsed / MIN_MS);
-        const eased = 1 - Math.pow(1 - t, 2.4);
-        let target = Math.floor(eased * 88);
-        if (loadDone && elapsed > MIN_MS) target = 100;
-        else if (elapsed > MAX_MS - 120) target = 100;
-        if (target > p) {
-          p = Math.min(100, Math.floor(p + Math.max(1, (target - p) * 0.42)));
-          if (Math.random() < 0.06 && p < 99) p = Math.min(99, p + 1);
-          if (fill) fill.style.width = p + "%";
-          if (pctEl) pctEl.textContent = p + "%";
-          if (track) track.setAttribute("aria-valuenow", String(p));
-          // pisca alguns blocos para dar vida
-          if (p % 9 === 0 || p > 96) {
-            for (let k = 0; k < 3; k++) {
-              const idx = Math.floor(Math.random() * cells.length);
-              const c = cells[idx];
-              c.classList.remove("is-grass", "is-stone", "is-dirt", "is-sky");
-              const rr = Math.random();
-              if (p > 68 && rr < 0.45) c.classList.add("is-grass");
-              else if (rr < 0.28) c.classList.add("is-stone");
-              else if (rr < 0.36) c.classList.add("is-dirt");
-            }
-          }
-        }
-        if (p >= 100) resolve();
-        else rafId = requestAnimationFrame(tick);
-      };
-      rafId = requestAnimationFrame(tick);
-    });
-
-    await new Promise((r) => setTimeout(r, 140));
-    pre.classList.add("is-dismissing");
-    pre.setAttribute("aria-busy", "false");
-
-    // centro some
-    await gsap.to(center, { scale: 0.94, y: -6, opacity: 0, duration: 0.26, ease: "power2.in" });
-
-    // dissolução dos pixeis grandes — a transição principal
-    await gsap.to(cells, {
-      scale: 0,
-      opacity: 0,
-      duration: 0.54,
-      ease: "power2.in",
-      stagger: { amount: 0.58, from: "random", grid: [rows, cols] }
-    });
-    // fade final do overlay
-    await gsap.to(pre, { opacity: 0, duration: 0.20, ease: "power1.out" });
-    pre.remove();
-    document.body.classList.remove("is-preloading");
-
-    // --- segunda transição: pixel wipe grande varrendo a tela ---
-    // cobre 1 frame e dissolve em blocos grandes (64px) de baixo para cima
-    const wipe = document.createElement("div");
-    wipe.className = "pixel-wipe";
-    wipe.setAttribute("aria-hidden", "true");
-    const WPIXEL = isMobile ? 40 : 64;
-    const wCols = Math.ceil(window.innerWidth / WPIXEL);
-    const wRows = Math.ceil(window.innerHeight / WPIXEL);
-    wipe.style.gridTemplateColumns = `repeat(${wCols}, 1fr)`;
-    wipe.style.gridTemplateRows = `repeat(${wRows}, 1fr)`;
-    const wCells = [];
-    for (let i = 0; i < wCols * wRows; i++) {
-      const s = document.createElement("span");
-      const v = Math.random();
-      if (v < 0.07) s.style.background = "#3c8527";
-      else if (v < 0.13) s.style.background = "#4f5157";
-      else if (v < 0.17) s.style.background = "#6b4a2b";
-      else s.style.background = "#1a1c1e";
-      wipe.appendChild(s);
-      wCells.push(s);
-    }
-    document.body.appendChild(wipe);
-    gsap.set(wCells, { scale: 1, opacity: 1, transformOrigin: "center center" });
-    // pequena pausa para o wipe ser percebido
-    await new Promise((r) => setTimeout(r, 70));
-    await gsap.to(wCells, {
-      scale: 0,
-      opacity: 0,
-      duration: 0.62,
-      ease: "power2.inOut",
-      stagger: { amount: 0.52, from: "end", grid: [wRows, wCols] }
-    });
-    await gsap.to(wipe, { opacity: 0, duration: 0.16, ease: "power1.out", onComplete: () => wipe.remove() });
-  }
-
-  async function init() {
-    await runPreloader();
+  function init() {
     setupDownloadMenus();
     setupButtons();
     setupMagnetic();
