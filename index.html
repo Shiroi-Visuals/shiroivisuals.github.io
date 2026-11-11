@@ -30,12 +30,15 @@
         <div class="download-menu__options" data-download-options hidden></div>
       </div>
     </div>
+    <div class="xp-bar" aria-hidden="true"><span class="xp-bar__fill"></span></div>
   </header>
 
   <main id="conteudo">
     <section class="hero" id="topo" aria-labelledby="hero-title">
-      <div class="hero__bg" data-dither-host>
-        <img class="hero__img" src="img/hero.jpg" width="1920" height="1080" alt="" fetchpriority="high">
+      <div class="hero__bg">
+        <div class="hero__zoom" data-dither-host>
+          <img class="hero__img" src="img/hero.jpg" width="1920" height="1080" alt="" fetchpriority="high">
+        </div>
       </div>
       <div class="hero__scrim" aria-hidden="true"></div>
       <div class="hero__content">
@@ -193,7 +196,6 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
