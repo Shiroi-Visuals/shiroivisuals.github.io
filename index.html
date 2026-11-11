@@ -30,19 +30,22 @@
         <div class="download-menu__options" data-download-options hidden></div>
       </div>
     </div>
+    <div class="xp-bar" aria-hidden="true"><span class="xp-bar__fill"></span></div>
   </header>
 
   <main id="conteudo">
     <section class="hero" id="topo" aria-labelledby="hero-title">
-      <div class="hero__bg" data-dither-host>
-        <img class="hero__img" src="img/hero.jpg" width="1920" height="1080" alt="" fetchpriority="high">
+      <div class="hero__bg">
+        <div class="hero__zoom" data-dither-host>
+          <img class="hero__img" src="img/hero.jpg" width="1920" height="1080" alt="" fetchpriority="high">
+        </div>
       </div>
       <div class="hero__scrim" aria-hidden="true"></div>
       <div class="hero__content">
         <h1 class="hero__title" id="hero-title">
           <img class="hero__logo" src="img/logo.png" width="1116" height="408" alt="Shiroi Visuals">
         </h1>
-        <p class="hero__lead">Uma experiencia completa para o Java Edition, deixei seu mundo mais bonito sem deixar de parecer... Ah.. Vanilla?</p>
+        <p class="hero__lead">Uma experiencia completa para o Java Edition, deixando seu mundo mais bonito sem deixar de parecer... Ah.. Vanilla?</p>
         <div class="hero__actions">
           <div class="magnetic">
             <div class="download-menu" data-download-menu>
@@ -64,9 +67,12 @@
       </div>
       <div class="hero__bar">
         <ul class="hero__facts">
+          <li>Minecraft Java 26.3</li>
+          <li>Iris</li>
+          <li>3 presets</li>
         </ul>
         <div class="bg-picker" role="group" aria-label="Fundo da pagina">
-          <p class="bg-picker__name"></p>
+          <p class="bg-picker__name"><span class="swap-text"></span></p>
           <div class="bg-picker__dots"></div>
           <button class="pixel-toggle" type="button" aria-pressed="false" aria-label="Pausar a troca de fundo">
             <svg class="pixel-toggle__pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h4v12H3zM9 2h4v12H9z"/></svg>
@@ -84,18 +90,17 @@
       <div class="container">
         <div class="presets__head">
           <h2 class="section-title" id="presets-title">Escolha o preset e veja no jogo</h2>
-        </div>
-
-        <div class="preset-switch" role="tablist" aria-label="Preset">
-          <button class="mcb mcb--stone preset-tab" role="tab" id="tab-ultra-low" data-preset="ultra-low" aria-selected="false" aria-controls="carousel" tabindex="-1">
-            <span class="mcb__face"><span class="mcb__label">Ultra Baixo</span></span>
-          </button>
-          <button class="mcb mcb--stone preset-tab" role="tab" id="tab-low" data-preset="low" aria-selected="false" aria-controls="carousel" tabindex="-1">
-            <span class="mcb__face"><span class="mcb__label">Baixo</span></span>
-          </button>
-          <button class="mcb mcb--stone preset-tab" role="tab" id="tab-medium" data-preset="medium" aria-selected="true" aria-controls="carousel">
-            <span class="mcb__face"><span class="mcb__label">Medio</span></span>
-          </button>
+          <div class="preset-switch" role="tablist" aria-label="Preset">
+            <button class="mcb mcb--stone preset-tab" role="tab" id="tab-ultra-low" data-preset="ultra-low" aria-selected="false" aria-controls="carousel" tabindex="-1">
+              <span class="mcb__face"><span class="mcb__label">Ultra Baixo</span></span>
+            </button>
+            <button class="mcb mcb--stone preset-tab" role="tab" id="tab-low" data-preset="low" aria-selected="false" aria-controls="carousel" tabindex="-1">
+              <span class="mcb__face"><span class="mcb__label">Baixo</span></span>
+            </button>
+            <button class="mcb mcb--stone preset-tab" role="tab" id="tab-medium" data-preset="medium" aria-selected="true" aria-controls="carousel">
+              <span class="mcb__face"><span class="mcb__label">Medio</span></span>
+            </button>
+          </div>
         </div>
 
         <div class="carousel" id="carousel" role="tabpanel" aria-labelledby="tab-medium" aria-roledescription="carrossel">
@@ -105,7 +110,7 @@
             </div>
           </div>
           <div class="carousel__bar">
-            <p class="carousel__caption" aria-live="polite"><span class="carousel__biome"></span><span class="carousel__count"></span></p>
+            <p class="carousel__caption" aria-live="polite"><span class="carousel__biome swap-text"></span><span class="carousel__count"></span></p>
             <div class="carousel__nav">
               <button class="mcb mcb--stone mcb--icon" type="button" data-dir="-1" aria-label="Captura anterior">
                 <span class="mcb__face"><svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M102.4 25.6 L102.4 0 L76.8 0 L76.8 25.6 Z M76.8 51.2 L76.8 25.6 L51.2 25.6 L51.2 51.2 Z M51.2 76.8 L51.2 51.2 L25.6 51.2 L25.6 76.8 Z M76.8 102.4 L76.8 76.8 L51.2 76.8 L51.2 102.4 Z M102.4 128 L102.4 102.4 L76.8 102.4 L76.8 128 Z"/></svg></span>
@@ -122,25 +127,27 @@
 
     <section class="install" id="instalar" aria-labelledby="install-title">
       <div class="container">
-        <h2 class="section-title" id="install-title">Como instalar</h2>
+        <div class="install__head">
+          <h2 class="section-title" id="install-title">Como instalar</h2>
+          <div class="install__cta">
+            <div class="magnetic">
+              <a class="mcb mcb--green mcb--xl" href="https://modrinth.com/shader/shiroi-visuals" target="_blank" rel="noopener noreferrer">
+                <span class="mcb__face">
+                  <svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M54.857 73.143 L54.857 0 L73.143 0 L73.143 73.143 L91.429 73.143 L91.429 54.857 L109.714 54.857 L109.714 73.143 L99.033 73.143 L99.033 80.747 L91.429 80.747 L91.429 91.429 L80.747 91.429 L80.747 99.033 L73.143 99.033 L73.143 109.714 L118.857 109.714 L118.857 128 L9.143 128 L9.143 109.714 L54.857 109.714 L54.857 99.033 L47.253 99.033 L47.253 91.429 L36.571 91.429 L36.571 80.747 L28.967 80.747 L28.967 73.143 L18.286 73.143 L18.286 54.857 L36.571 54.857 L36.571 73.143 Z"/></svg>
+                  <span class="mcb__text">
+                    <span class="mcb__label">Baixar no Modrinth</span>
+                  </span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
         <ol class="steps">
           <li class="step"><span class="step__slot" aria-hidden="true">1</span><p>Instale o <span class="iris"><img class="iris__mark" src="img/icons/iris-svg-logo.svg" width="128" height="128" alt="">Iris</span> para o Minecraft Java 26.3.</p></li>
           <li class="step"><span class="step__slot" aria-hidden="true">2</span><p>Coloque o arquivo .zip na pasta <code>shaderpacks</code>, sem extrair.</p></li>
           <li class="step"><span class="step__slot" aria-hidden="true">3</span><p>No jogo, abra Opcoes, Video, Shader Packs e escolha Shiroi Visuals V10.3.</p></li>
           <li class="step"><span class="step__slot" aria-hidden="true">4</span><p>Escolha o preset no menu do shader. O padrao e o Medio.</p></li>
         </ol>
-        <div class="install__cta">
-          <div class="magnetic">
-            <a class="mcb mcb--green mcb--xl" href="https://modrinth.com/shader/shiroi-visuals" target="_blank" rel="noopener noreferrer">
-              <span class="mcb__face">
-                <svg class="mcb__icon" viewBox="0 0 128 128" aria-hidden="true"><path d="M54.857 73.143 L54.857 0 L73.143 0 L73.143 73.143 L91.429 73.143 L91.429 54.857 L109.714 54.857 L109.714 73.143 L99.033 73.143 L99.033 80.747 L91.429 80.747 L91.429 91.429 L80.747 91.429 L80.747 99.033 L73.143 99.033 L73.143 109.714 L118.857 109.714 L118.857 128 L9.143 128 L9.143 109.714 L54.857 109.714 L54.857 99.033 L47.253 99.033 L47.253 91.429 L36.571 91.429 L36.571 80.747 L28.967 80.747 L28.967 73.143 L18.286 73.143 L18.286 54.857 L36.571 54.857 L36.571 73.143 Z"/></svg>
-                <span class="mcb__text">
-                  <span class="mcb__label">Baixar no Modrinth</span>
-                </span>
-              </span>
-            </a>
-          </div>
-        </div>
       </div>
     </section>
   </main>
@@ -189,7 +196,6 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
